@@ -4,7 +4,7 @@ A modern React application using TanStack Router and other cutting-edge technolo
 
 ## Features
 
-- ⚡ [Vite](https://vite.dev/) - Extremely fast build tool with SWC compiler
+- ⚡ [Vite](https://vite.dev/) - Extremely fast build tool and development server
 - 📦 [React 19](https://react.dev/) - With React Compiler for optimized performance
 - 🔒 [Auth0](https://auth0.com/) - Complete authentication and authorization
 - 🚀 [TanStack Router](https://tanstack.com/router/latest) - File-based routing with built-in data loading
