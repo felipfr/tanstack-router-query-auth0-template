@@ -29,7 +29,7 @@ storybook-static
 *.local
 .env
 .env.*
-!.env.example
+!.env.local.example
 
 # Testing
 coverage
