@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "baseUrl": ".",
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@/*": ["./app/*"]
+    },
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "target": "ES2022",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "useDefineForClassFields": true
+  },
+  "include": ["**/*.ts", "**/*.tsx", "vite.config.ts"]
+}

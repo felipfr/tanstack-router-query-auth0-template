@@ -1,0 +1,4 @@
+package-lock.json
+routeTree.gen.ts
+**/build
+**/public
