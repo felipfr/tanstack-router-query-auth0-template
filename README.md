@@ -1,4 +1,4 @@
-# TanStack Start Template
+# TanStack Router Query Auth0 Template
 
 A modern React application using TanStack Router and other cutting-edge technologies.
 
