@@ -17,18 +17,13 @@ A modern React application using TanStack Router and other cutting-edge technolo
 - 🎭 [Lucide Icons](https://lucide.dev/) - Beautiful & consistent icon toolkit
 - 🌙 Light/Dark Mode with [next-themes](https://github.com/pacocoursey/next-themes)
 
-## Prerequisites
-
-- Node.js 18+
-- npm, yarn, or pnpm
-
 ## Quick Start
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/tanstack-start-template.git
-cd tanstack-start-template
+git clone https://github.com/felipfr/tanstack-router-query-auth0-template.git
+cd tanstack-router-query-auth0-template
 ```
 
 2. Install dependencies:
@@ -47,15 +42,7 @@ pnpm install
 cp .env.local.example .env.local
 ```
 
-Edit the .env.local file with your settings:
-
-```bash
-VITE_AUTH0_DOMAIN=
-VITE_AUTH0_CLIENT_ID=
-VITE_AUTH0_CALLBACK_URL=
-VITE_APP_NAME=
-VITE_APP_DESCRIPTION=
-```
+Edit the .env.local file with your settings.
 
 4. Start the development server:
 
