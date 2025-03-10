@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    open-pull-requests-limit: 10
+    target-branch: main
+    schedule:
+      interval: weekly
+    groups:
+      non-major:
+        update-types:
+          - 'minor'
+          - 'patch'
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
