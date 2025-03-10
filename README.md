@@ -6,7 +6,7 @@ A modern React application using TanStack Router and other cutting-edge technolo
 
 - ⚡ [Vite](https://vite.dev/) - Extremely fast build tool and development server
 - 📦 [React 19](https://react.dev/) - With React Compiler for optimized performance
-- 🔒 [Auth0](https://auth0.com/) - Complete authentication and authorization
+- 🔒 [Auth0](https://auth0.com/) - Complete authentication and authorization with Role-Based Access Control (RBAC)
 - 🚀 [TanStack Router](https://tanstack.com/router/latest) - File-based routing with built-in data loading
 - 🔍 [TanStack Query](https://tanstack.com/query/latest) - Efficient server state management
 - 🎨 [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
