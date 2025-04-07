@@ -1,0 +1,114 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/**"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          registry-url: https://npm.pkg.github.com/
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Generate Artifact
+        run: |
+          cd dist
+          tar -zcvf ${{ github.run_number }}.tar.gz *
+      - uses: actions/upload-artifact@v4
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        with:
+          name: ${{ github.run_number }}
+          path: dist/${{ github.run_number }}.tar.gz
+          if-no-files-found: error
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'prd' || 'dev' }}
+      url: ${{ vars.CLOUDFRONT_DOMAIN }}
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ github.run_number }}
+          path: ./
+
+      - name: Extract Artifacts
+        run: |
+          mkdir -p dist
+          tar -xzvf ${{ github.run_number }}.tar.gz -C dist/
+
+      - name: Replace Tokens for Environment Variables
+        uses: cschleiden/replace-tokens@v1
+        with:
+          tokenPrefix: "{{"
+          tokenSuffix: "}}"
+          files: '["**/*.js", "**/*.html"]'
+        env:
+          VITE_APP_NAME: ${{ vars.VITE_APP_NAME }}
+          VITE_APP_DESCRIPTION: ${{ vars.VITE_APP_DESCRIPTION }}
+          VITE_AUTH0_CALLBACK_URL: ${{ vars.VITE_AUTH0_CALLBACK_URL }}
+          VITE_AUTH0_CLIENT_ID: ${{ vars.VITE_AUTH0_CLIENT_ID }}
+          VITE_AUTH0_DOMAIN: ${{ vars.VITE_AUTH0_DOMAIN }}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-session-name: GitHubActionsSession
+          role-duration-seconds: 1200
+
+      - name: Deploy to S3
+        run: |
+          aws s3 sync dist/ s3://${{ vars.S3_BUCKET }} --delete
+
+      - name: Invalidate CloudFront Cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+      - name: Output CloudFront URL
+        run: |
+              echo "::notice title=Deployment Successful to ${{ github.ref == 'refs/heads/main' && 'Production' || 'Development' }}::The application has been deployed to CloudFront"
+              echo "::notice title=CloudFront URL (${{ github.ref == 'refs/heads/main' && 'Production' || 'Development' }})::${{ vars.CLOUDFRONT_DOMAIN }}"
+              echo "::group::Deployment Summary"
+              echo "Environment: ${{ github.ref == 'refs/heads/main' && 'Production (prd)' || 'Development (dev)' }}"
+              echo "Branch: ${{ github.ref_name }}"
+              echo "Commit: ${{ github.sha }}"
+              echo "Deployed by: ${{ github.actor }}"
+              echo "S3 Bucket: ${{ vars.S3_BUCKET }}"
+              echo "CloudFront Distribution: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}"
+              echo "Application URL: ${{ vars.CLOUDFRONT_DOMAIN }}"
+              echo "::endgroup::"
